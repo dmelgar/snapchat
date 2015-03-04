@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import MobileCoreServices
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -21,5 +23,30 @@ class ViewController: UIViewController {
     }
 
 
+    @IBAction func displayCamera() {
+        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        let camera = UIImagePickerController()
+        camera.delegate = self
+        if hasCamera {
+            camera.sourceType = UIImagePickerControllerSourceType.Camera
+        } else {
+            camera.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        }
+        camera.mediaTypes = [kUTTypeImage]
+        camera.allowsEditing = true     // Don't see a disadvantage to supporting this
+        self.presentViewController(camera, animated: true, completion: nil)
+    }
+    
+    
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        println("Image taken")
+        
+        picker.presentingViewController?.dismissViewControllerAnimated(true, completion: {
+            println("Received image2")
+            let gallery = GalleryViewController()
+            self.navigationController!.pushViewController(gallery, animated: true)
+        })
+    }
 }
 
