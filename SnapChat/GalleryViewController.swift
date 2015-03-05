@@ -8,6 +8,13 @@
 
 import UIKit
 
+/*
+Manages a set of three UIImageViews in a paging UIScrollView.
+Images are placed into the views and moved around based on paging.
+Content size and content offset adjusted as paging occurs and in relation
+to edge cases
+*/
+
 class GalleryViewController: UIViewController, UIScrollViewDelegate {
 
     var currentImageIndex: Int = 0
@@ -137,6 +144,12 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         2. move imageView at bottomView to middleView
         3. reset current scroll view position to middleView
         4. load new image into imageView for bottomView
+        
+        Handle special cases.
+        Normally view port is in middle image view, but when at the beginning view port moves to the top image.
+        Likewise when at the end, view port moves to the bottom image.
+        Content size is also adjusted when at the ends to limit paging.
+        
         */
         var rejectPage = false
         // if offset is below the start of middle view, then it was a scroll down
