@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		330DD8521AA771C400DCFB7D /* placeholder.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 330DD8511AA771C400DCFB7D /* placeholder.jpg */; };
+		330DD8541AA7D07800DCFB7D /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = 330DD8531AA7D07800DCFB7D /* camera.png */; };
+		330DD8561AA7D19300DCFB7D /* gallery.png in Resources */ = {isa = PBXBuildFile; fileRef = 330DD8551AA7D19300DCFB7D /* gallery.png */; };
+		330DD8581AA7D3BA00DCFB7D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330DD8571AA7D3BA00DCFB7D /* LoginViewController.swift */; };
 		33600C751AA610BD0010AF8A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33600C741AA610BD0010AF8A /* AppDelegate.swift */; };
 		33600C771AA610BD0010AF8A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33600C761AA610BD0010AF8A /* ViewController.swift */; };
 		33600C7A1AA610BD0010AF8A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33600C781AA610BD0010AF8A /* Main.storyboard */; };
@@ -27,6 +31,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		330DD8511AA771C400DCFB7D /* placeholder.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = placeholder.jpg; sourceTree = "<group>"; };
+		330DD8531AA7D07800DCFB7D /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
+		330DD8551AA7D19300DCFB7D /* gallery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gallery.png; sourceTree = "<group>"; };
+		330DD8571AA7D3BA00DCFB7D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		33600C6F1AA610BD0010AF8A /* SnapChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SnapChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		33600C731AA610BD0010AF8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		33600C741AA610BD0010AF8A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -79,6 +87,9 @@
 		33600C711AA610BD0010AF8A /* SnapChat */ = {
 			isa = PBXGroup;
 			children = (
+				330DD8551AA7D19300DCFB7D /* gallery.png */,
+				330DD8531AA7D07800DCFB7D /* camera.png */,
+				330DD8511AA771C400DCFB7D /* placeholder.jpg */,
 				33600C741AA610BD0010AF8A /* AppDelegate.swift */,
 				33600C761AA610BD0010AF8A /* ViewController.swift */,
 				33600C781AA610BD0010AF8A /* Main.storyboard */,
@@ -86,6 +97,7 @@
 				33600C7D1AA610BD0010AF8A /* LaunchScreen.xib */,
 				33600C721AA610BD0010AF8A /* Supporting Files */,
 				33600C941AA6241F0010AF8A /* GalleryViewController.swift */,
+				330DD8571AA7D3BA00DCFB7D /* LoginViewController.swift */,
 			);
 			path = SnapChat;
 			sourceTree = "<group>";
@@ -195,9 +207,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				330DD8561AA7D19300DCFB7D /* gallery.png in Resources */,
+				330DD8521AA771C400DCFB7D /* placeholder.jpg in Resources */,
 				33600C7A1AA610BD0010AF8A /* Main.storyboard in Resources */,
 				33600C7F1AA610BD0010AF8A /* LaunchScreen.xib in Resources */,
 				33600C7C1AA610BD0010AF8A /* Images.xcassets in Resources */,
+				330DD8541AA7D07800DCFB7D /* camera.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,6 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				330DD8581AA7D3BA00DCFB7D /* LoginViewController.swift in Sources */,
 				33600C951AA6241F0010AF8A /* GalleryViewController.swift in Sources */,
 				33600C771AA610BD0010AF8A /* ViewController.swift in Sources */,
 				33600C751AA610BD0010AF8A /* AppDelegate.swift in Sources */,
@@ -413,6 +429,7 @@
 				33600C901AA610BD0010AF8A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		33600C911AA610BD0010AF8A /* Build configuration list for PBXNativeTarget "SnapChatTests" */ = {
 			isa = XCConfigurationList;
@@ -421,6 +438,7 @@
 				33600C931AA610BD0010AF8A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -17,20 +17,38 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     var bottomView: UIImageView?
     var iv: [UIImageView] = [UIImageView]()
     var previousOffset = CGPointZero
-    var numberOfImages = 5
     
     override init() {
         super.init()
         setup()
+        println("init bare called")
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         setup()
+        println("Init nib called")
     }
 
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        println("init coder called")
+    }
+    
+    // Resets gallery to top, display placeholder and fill in images below it
+    func displayPlaceHolder() {
+        let placeholder = UIImage(named: "placeholder.jpg")
+        topView!.image = placeholder
+        currentImageIndex = 0
+        middleView!.image = imageForIndex(0)
+        adjustContentSize()
+    }
+    
+    // A little risky timing wise. Assumption is that the resize will be very quick, user not able to scroll down
+    // to replace top view in time to cause an issue
+    func replacePlaceholder(image: UIImage) {
+        topView!.image = image
+        middleView!.image = imageForIndex(1)
     }
 
     func setup() {
@@ -56,13 +74,17 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         ivFrame.origin.y = ivFrame.height * 2
         bottomView = UIImageView(frame: ivFrame)
         
+        topView!.contentMode    = .ScaleAspectFit
+        middleView!.contentMode = .ScaleAspectFit
+        bottomView!.contentMode = .ScaleAspectFit
+        
         scrollView.addSubview(topView!)
         scrollView.addSubview(middleView!)
         scrollView.addSubview(bottomView!)
         
         middleView!.backgroundColor = UIColor.greenColor()
         bottomView!.backgroundColor = UIColor.blueColor()
-        topView!.backgroundColor = UIColor.redColor()
+        topView!.backgroundColor    = UIColor.redColor()
         
         topView!.image = imageForIndex(0)
         middleView!.image = imageForIndex(1)
@@ -79,6 +101,7 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func adjustContentSize() {
+        let numberOfImages = (UIApplication.sharedApplication().delegate as! AppDelegate).imageCount
         let numberOfImageViews = min(3, numberOfImages)
         let viewSize = view.frame.size
         let scContentSize = CGSizeMake(viewSize.width, viewSize.height * CGFloat(numberOfImageViews))
@@ -96,15 +119,20 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     }
     
     // Returns nil if the image is not found
+    // Can reverse order here
     func imageForIndex(index: Int) -> UIImage? {
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as! [String]
-        let path = paths[0]
-//        let paths = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-//        let path = (paths[0] as! NSURL).absoluteString
-//        println(path)
-        let filename = path + "/" + String(index) + ".jpg"
-        println(filename)
-        let image = UIImage(contentsOfFile: filename)
+        let numberOfImages = (UIApplication.sharedApplication().delegate as! AppDelegate).imageCount
+        let reversedIndex = numberOfImages - 1 - index
+        let image: UIImage?
+        if reversedIndex < 0 {
+            image = nil
+        } else {
+            let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as! [String]
+            let path = paths[0]
+            let filename = path + "/" + String(reversedIndex) + ".png"
+            // println(filename)
+            image = UIImage(contentsOfFile: filename)
+        }
         return image
     }
     
@@ -116,6 +144,7 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     //MARK: ScrollView Delegate
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        let numberOfImages = (UIApplication.sharedApplication().delegate as! AppDelegate).imageCount
         // View has stopped scrolling. Readjust
         
         /*
@@ -209,6 +238,9 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         println("CurrentImageIndex = \(currentImageIndex)")
     }
     
+    deinit {
+        println("GalleryViewController deinit. Object going away")
+    }
     
 
     override func didReceiveMemoryWarning() {

@@ -42,11 +42,22 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         println("Image taken")
         
-        picker.presentingViewController?.dismissViewControllerAnimated(true, completion: {
-            println("Received image2")
-            let gallery = GalleryViewController()
-            self.navigationController!.pushViewController(gallery, animated: true)
+        // Here or after dismiss?
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        println("Received image2")
+        
+        appDelegate.imageCount++
+        appDelegate.galleryViewController = GalleryViewController()
+        
+        // Background thread to resize, save image and update gallery view
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            appDelegate.processImage(image)
         })
+        
+        appDelegate.galleryViewController!.displayPlaceHolder()
+        self.navigationController!.pushViewController(appDelegate.galleryViewController!, animated: true)
+        
+        picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 }
 
