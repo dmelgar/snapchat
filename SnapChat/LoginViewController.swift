@@ -26,11 +26,6 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func login() {
-        // Previously logged in successfully
-        // Eventually need some policy to time out etc.
-        if NSUserDefaults.standardUserDefaults().boolForKey("loggedIn") {
-            return
-        }
         // Check for valid userid/password
         if (password!.text == "demo") {
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "loggedIn")
