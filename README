@@ -1,0 +1,41 @@
+Implementation of an app to capture photos and add to a gallery.
+
+I was not clear on the requirements and potentially made the UI more complex than desired/needed.
+
+The requirements implied having a navigation view with buttons on the bottom that are always visible.
+
+I ended up creating a navigation controller with the camera and gallery buttons at the root level. Select camera to 
+take a picture. Select gallery to display photos taken.
+
+From a UX perspective, I think it would be preferable for the app to start in the gallery with a camera button
+always available. There would never be a need for the gallery button. Taking a photo takes you to the gallery.
+When the app starts it starts at the gallery. Cancelling taking a photo could go back to the gallery.
+
+The background thread resizing of the image happens so quickly on my iPhone 6 and iPad Air that it is not noticable
+that a placeholder image is briefly displayed. There is a commented out 1 second timer in AppDelegate.processImage
+to make the placeholder visible.
+
+Written using Xcode 8.3 beta. Swift language has changed, improved in some respects. Compiler is significantly more stable.
+Now has incremental build to speed it up.
+
+I've experienced an iOS 8 bug on both my iPad and iPhone 6. In iMessage, if you take one photo it works ok. Second photo
+shows up with a black screen, ie no connection to camera but the frame is there. This bug has been present since the betas
+and still not fixed.
+I'm running into the same issue in this app. Second attempt to take a picture with iOS 8.1 shows a black screen, but you
+can still take the picture. Every other attempt displays a black screen. I attempted various things to work around it 
+mentioned online but none worked.
+
+App is portrait only. Landscape support would require modification to gallery to change the size of the image views, their
+locations and navigation.
+
+Most of the code is in the GalleryViewController. I've written something similar for a previous project, eCat. That code didn't
+use UIScrollView at all and did it all natively/manually. Somewhat easier this time but still lots of special cases and edge cases.
+
+If I were to do it again, I wouldn't use a storyboard and would have a single gallery view as the base, displaying 
+camera as modal view and login as modal view.
+
+Login saves successful login to UserDefaults. After initial successful login it skips login prompt. Need to uninstall the app
+and reinstall if you'd like to try the login page.
+
+Thats about all the notes I can think of.
+Enjoy
