@@ -21,18 +21,18 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     override init() {
         super.init()
         setup()
-        println("init bare called")
+        // println("init bare called")
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        setup()
-        println("Init nib called")
+        // setup()
+        // println("Init nib called")
     }
 
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        println("init coder called")
+        // println("init coder called")
     }
     
     // Resets gallery to top, display placeholder and fill in images below it
@@ -64,7 +64,7 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         scrollView.scrollsToTop = false
         scrollView.frame = view.bounds
         scrollView.delegate = self
-        scrollView.backgroundColor = UIColor.cyanColor()
+        // scrollView.backgroundColor = UIColor.cyanColor()
         view.addSubview(scrollView)
         
         var ivFrame = view.bounds
@@ -82,22 +82,16 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         scrollView.addSubview(middleView!)
         scrollView.addSubview(bottomView!)
         
-        middleView!.backgroundColor = UIColor.greenColor()
-        bottomView!.backgroundColor = UIColor.blueColor()
-        topView!.backgroundColor    = UIColor.redColor()
+        // Set colors for debugging
+//        middleView!.backgroundColor = UIColor.greenColor()
+//        bottomView!.backgroundColor = UIColor.blueColor()
+//        topView!.backgroundColor    = UIColor.redColor()
         
         topView!.image = imageForIndex(0)
         middleView!.image = imageForIndex(1)
         bottomView!.image = imageForIndex(2)
-        // middleView!.image = imageForIndex(currentImageIndex)
-        // bottomView!.image = imageForIndex(currentImageIndex+1)
+        
         scrollView.contentOffset = CGPointMake(0, 0)
-        // scrollView.contentOffset = CGPointMake(0, view.bounds.height)
-        
-        
-        for i in 0...2 {
-            iv.append(UIImageView())
-        }
     }
     
     func adjustContentSize() {
@@ -111,15 +105,10 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
-        // Do any additional setup after loading the view.
-        
-        /* Create a UIScrollView thats 3x the height of the screen so that it can hold the previous and next image
-        the middle image
-        */
     }
     
     // Returns nil if the image is not found
-    // Can reverse order here
+    // Reverse order here
     func imageForIndex(index: Int) -> UIImage? {
         let numberOfImages = (UIApplication.sharedApplication().delegate as! AppDelegate).imageCount
         let reversedIndex = numberOfImages - 1 - index
@@ -135,12 +124,7 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         }
         return image
     }
-    
-    func viewForIndex(index: Int) -> UIView? {
-        return nil
-    }
-    
-    
+
     //MARK: ScrollView Delegate
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
@@ -235,28 +219,12 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
             }
         }
         previousOffset = scrollView.contentOffset
-        println("CurrentImageIndex = \(currentImageIndex)")
+        // println("CurrentImageIndex = \(currentImageIndex)")
     }
-    
-    deinit {
-        println("GalleryViewController deinit. Object going away")
-    }
-    
 
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

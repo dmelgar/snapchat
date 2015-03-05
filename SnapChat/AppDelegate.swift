@@ -73,24 +73,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIImagePNGRepresentation(newImage).writeToFile(filename, atomically: true)
         // UIImageJPEGRepresentation(newImage, 0.5).writeToFile(filename, atomically: true)
         
-        // imageCount++
-        
         // Invoke method on gallery view to update
-        NSThread.sleepForTimeInterval(1)
+        // NSThread.sleepForTimeInterval(1)     // Use for debugging. Otherwise goes too fast
         dispatch_sync(dispatch_get_main_queue(), {
             self.galleryViewController?.replacePlaceholder(newImage)
         })
     }
     
     func resizeImage(image: UIImage, size: CGSize) -> UIImage {
-        // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
-        // Pass 1.0 to force exact pixel size.
         UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
         image.drawInRect(CGRectMake(0, 0, size.width, size.height))
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return newImage
     }
-
 }
 

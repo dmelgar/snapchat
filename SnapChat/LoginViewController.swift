@@ -14,6 +14,7 @@ class LoginViewController: UIViewController {
     @IBOutlet var password: UITextField?
     
     override func viewDidAppear(animated: Bool) {
+        // Would implement differently second time. Modal view for login or not with storyboard
         if NSUserDefaults.standardUserDefaults().boolForKey("loggedIn") {
             performSegueWithIdentifier("loggedIn", sender: self)
         }
@@ -45,16 +46,6 @@ class LoginViewController: UIViewController {
                 self.presentViewController(alert, animated: true, completion: nil)
             }
         }
+        // Falls through and performs segue unless alert is displayed
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

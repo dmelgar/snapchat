@@ -8,6 +8,7 @@
 
 import UIKit
 import MobileCoreServices
+import AVFoundation
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -24,6 +25,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
 
     @IBAction func displayCamera() {
+        // Check permissions. iOS 8 bug. 2nd try using camera comes up with blank/empty/black view.
+        // Taking the picture anyway seems to work. Same effect on my iPad Air and iPhone 6 both running iOS 8.1
+        
+//        let status = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+//        println(status)
+        
         let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         let camera = UIImagePickerController()
         camera.delegate = self
@@ -32,19 +39,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         } else {
             camera.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
         }
+        camera.modalPresentationStyle = UIModalPresentationStyle.FullScreen
         camera.mediaTypes = [kUTTypeImage]
-        camera.allowsEditing = true     // Don't see a disadvantage to supporting this
+        camera.allowsEditing = false
         self.presentViewController(camera, animated: true, completion: nil)
     }
     
     
-    
+    //MARK: UIImagePickerController delegate methods
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
-        println("Image taken")
         
-        // Here or after dismiss?
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        println("Received image2")
         
         appDelegate.imageCount++
         appDelegate.galleryViewController = GalleryViewController()
