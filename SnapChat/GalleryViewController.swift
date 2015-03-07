@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MobileCoreServices
 
 /*
 Manages a set of three UIImageViews in a paging UIScrollView.
@@ -15,7 +16,7 @@ Content size and content offset adjusted as paging occurs and in relation
 to edge cases
 */
 
-class GalleryViewController: UIViewController, UIScrollViewDelegate {
+class GalleryViewController: UIViewController, UIScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     enum ActiveImageViewEnum {
         case T, M, B
         func description () -> String {
@@ -31,6 +32,9 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     }
     var activeImageView: ActiveImageViewEnum = .T
 
+    var loginViewController: LoginViewController?
+    var loggedIn = false
+    
     var currentImageIndex: Int = 0
     var scrollView: UIScrollView = UIScrollView()
     var topView: UIImageView?
@@ -54,6 +58,12 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         // println("init coder called")
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        if !loggedIn {
+            login()
+        }
     }
     
     func activeImageViewForOffset(offset: CGFloat) -> ActiveImageViewEnum {
@@ -83,18 +93,30 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     
     // Resets gallery to top, display placeholder and fill in images below it
     func displayPlaceHolder() {
-        let placeholder = UIImage(named: "placeholder.jpg")
-        topView!.image = placeholder
-        currentImageIndex = 0
-        middleView!.image = imageForIndex(0)
-        adjustContentSize()
+        moveToTop(placeHolder: true)
     }
     
     // A little risky timing wise. Assumption is that the resize will be very quick, user not able to scroll down
     // to replace top view in time to cause an issue
     func replacePlaceHolder(image: UIImage) {
-        topView!.image = image
-        middleView!.image = imageForIndex(1)
+        moveToTop()
+    }
+    
+    func moveToTop(placeHolder withPlaceHolder: Bool = false) {
+        if withPlaceHolder {
+            topView!.image = UIImage(named: "placeholder.jpg")
+            middleView!.image = imageForIndex(0)
+            bottomView!.image = imageForIndex(1)
+        } else {
+            topView!.image = imageForIndex(0)
+            middleView!.image = imageForIndex(1)
+            bottomView!.image = imageForIndex(2)
+        }
+        currentImageIndex = 0
+        adjustContentSize()
+        scrollView.contentOffset = CGPointZero
+        previousOffset = CGPointZero
+        activeImageView = .T
     }
 
     func setup() {
@@ -139,6 +161,20 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         bottomView!.image = imageForIndex(2)
         
         scrollView.contentOffset = CGPointMake(0, 0)
+        
+        // Add button
+        var camera = UIButton.buttonWithType(UIButtonType.System) as! UIButton
+        camera.setTitle("Camera", forState: UIControlState.Normal)
+        camera.setTranslatesAutoresizingMaskIntoConstraints(false)
+        camera.addTarget(self, action: "actionCamera", forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(camera)
+        
+        var viewsDict = Dictionary <String, UIView>()
+        viewsDict["camera"] = camera
+        
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[camera]-20-|", options: nil, metrics: nil, views: viewsDict));
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[camera]", options: nil, metrics: nil, views: viewsDict));
+        
     }
     
     func adjustContentSize(numberOfViews: Int? = nil) {
@@ -322,6 +358,59 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         // println("CurrentImageIndex = \(currentImageIndex)")
     }
 
+    
+    func actionCamera() {
+        // Check permissions. iOS 8 bug. 2nd try using camera comes up with blank/empty/black view.
+        // Taking the picture anyway seems to work. Same effect on my iPad Air and iPhone 6 both running iOS 8.1
+        
+        //        let status = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        //        println(status)
+        
+        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        let camera = UIImagePickerController()
+        camera.delegate = self
+        if hasCamera {
+            camera.sourceType = UIImagePickerControllerSourceType.Camera
+        } else {
+            camera.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        }
+        camera.modalPresentationStyle = UIModalPresentationStyle.FullScreen
+        camera.mediaTypes = [kUTTypeImage]
+        camera.allowsEditing = false
+        self.presentViewController(camera, animated: true, completion: nil)
+    }
+    
+    
+    //MARK: UIImagePickerController delegate methods
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        
+        appDelegate.imageCount++
+        displayPlaceHolder()
+        appDelegate.galleryViewController = self
+        
+        // Background thread to resize, save image and update gallery view
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            appDelegate.processImage(image)
+        })
+        
+        picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+
+    
+    func login() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        loginViewController = storyboard.instantiateInitialViewController() as! LoginViewController
+        loginViewController!.delegate = self
+        modalPresentationStyle = .CurrentContext
+        presentViewController(loginViewController!, animated: true, completion: nil)
+    }
+    
+    func loginSuccess(sender: LoginViewController) {
+        loggedIn = true
+        sender.dismissViewControllerAnimated(true, completion: nil)
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

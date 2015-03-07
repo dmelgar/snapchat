@@ -51,7 +51,6 @@
                                 </state>
                                 <connections>
                                     <action selector="login" destination="vXZ-lx-hvc" eventType="touchUpInside" id="oHu-Nx-JRv"/>
-                                    <segue destination="rAD-Vr-rHO" kind="show" identifier="loggedIn" id="mOr-wp-wN6"/>
                                 </connections>
                             </button>
                         </subviews>

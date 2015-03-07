@@ -52,7 +52,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
         appDelegate.imageCount++
-        appDelegate.galleryViewController = GalleryTableViewController()
+        // appDelegate.galleryViewController = GalleryTableViewController()
         appDelegate.galleryViewController!.viewDidLoad()
         // appDelegate.galleryViewController = GalleryViewController()
         

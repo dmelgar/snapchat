@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import MobileCoreServices
 
-class GalleryTableViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource {
+class GalleryTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     var _displayPlaceHolder = false
+    var tableView = UITableView()
     
     override func viewDidLoad() {
         println("GalleryTableViewController viewDidLoad")
@@ -22,6 +24,28 @@ class GalleryTableViewController: UITableViewController, UITableViewDelegate, UI
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        // Add button
+        var camera = UIButton.buttonWithType(UIButtonType.System) as! UIButton
+        camera.setTitle("Camera", forState: UIControlState.Normal)
+        camera.setTranslatesAutoresizingMaskIntoConstraints(false)
+        camera.addTarget(self, action: "actionCamera", forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(camera)
+        
+        view.addSubview(tableView)
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        
+        var viewsDict = Dictionary <String, UIView>()
+        viewsDict["camera"] = camera
+        viewsDict["table"] = tableView
+        
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[camera]-20-|", options: nil, metrics: nil, views: viewsDict));
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[camera]", options: nil, metrics: nil, views: viewsDict));
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[table]|", options: nil, metrics: nil, views: viewsDict));
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[table]|", options: nil, metrics: nil, views: viewsDict));
+        view.bringSubviewToFront(camera)
     }
 
     override func didReceiveMemoryWarning() {
@@ -31,13 +55,13 @@ class GalleryTableViewController: UITableViewController, UITableViewDelegate, UI
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         let numberOfImages = (UIApplication.sharedApplication().delegate as! AppDelegate).imageCount
@@ -45,7 +69,7 @@ class GalleryTableViewController: UITableViewController, UITableViewDelegate, UI
     }
 
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier("imageCell", forIndexPath: indexPath) as! ImageTableViewCell
         // var cell = ImageTableViewCell()
         
@@ -96,9 +120,51 @@ class GalleryTableViewController: UITableViewController, UITableViewDelegate, UI
         tableView.reloadData()
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return tableView.bounds.height
     }
+    
+    
+    func actionCamera() {
+        // Check permissions. iOS 8 bug. 2nd try using camera comes up with blank/empty/black view.
+        // Taking the picture anyway seems to work. Same effect on my iPad Air and iPhone 6 both running iOS 8.1
+        
+        //        let status = AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+        //        println(status)
+        
+        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        let camera = UIImagePickerController()
+        camera.delegate = self
+        if hasCamera {
+            camera.sourceType = UIImagePickerControllerSourceType.Camera
+        } else {
+            camera.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        }
+        camera.modalPresentationStyle = UIModalPresentationStyle.FullScreen
+        camera.mediaTypes = [kUTTypeImage]
+        camera.allowsEditing = false
+        self.presentViewController(camera, animated: true, completion: nil)
+    }
+    
+    
+    //MARK: UIImagePickerController delegate methods
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        
+        appDelegate.imageCount++
+        displayPlaceHolder()
+        // appDelegate.galleryViewController = self
+        
+        // Background thread to resize, save image and update gallery view
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            appDelegate.processImage(image)
+        })
+        
+        picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+
 
     /*
     // Override to support conditional editing of the table view.

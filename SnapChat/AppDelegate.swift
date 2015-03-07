@@ -15,16 +15,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // Maintains reference to singleton GalleryViewController
     // var galleryViewController: GalleryTableViewController?
-    var galleryViewController: GalleryTableViewController?
+    var galleryViewController: GalleryViewController?
     
     // Images are kept stores in Document directory with name = indexNumber.png. 
     // ImageCount is the number of images the app knows about. In this demo the count is not
     // saved although images are. Could use UserDefaults or other file to save previous count
-    var imageCount = 4
+    var imageCount = 0
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        let frame = UIScreen.mainScreen().bounds
+        window = UIWindow(frame: frame)
+        window!.backgroundColor = UIColor.whiteColor()
+        
+        let itemsViewControler: UIViewController = GalleryViewController()
+        // let itemsViewControler: UIViewController = GalleryTableViewController()
+        if let window = self.window{
+            window.rootViewController = itemsViewControler
+            window.makeKeyAndVisible()
+        }
         return true
     }
 
@@ -75,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // UIImageJPEGRepresentation(newImage, 0.5).writeToFile(filename, atomically: true)
         
         // Invoke method on gallery view to update
-        NSThread.sleepForTimeInterval(1)     // Use for debugging. Otherwise goes too fast
+        // NSThread.sleepForTimeInterval(1)     // Use for debugging. Otherwise goes too fast
         dispatch_sync(dispatch_get_main_queue(), {
             self.galleryViewController?.replacePlaceHolder(newImage)
         })

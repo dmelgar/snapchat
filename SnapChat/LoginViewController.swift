@@ -12,11 +12,18 @@ class LoginViewController: UIViewController {
     
     @IBOutlet var user: UITextField?
     @IBOutlet var password: UITextField?
+    @IBOutlet var delegate: GalleryViewController?
+    
+    override func viewDidLoad() {
+        // Construct the view
+        
+    }
     
     override func viewDidAppear(animated: Bool) {
         // Would implement differently second time. Modal view for login or not with storyboard
         if NSUserDefaults.standardUserDefaults().boolForKey("loggedIn") {
             performSegueWithIdentifier("loggedIn", sender: self)
+            delegate?.loginSuccess(self)
         }
     }
 
@@ -29,6 +36,7 @@ class LoginViewController: UIViewController {
         // Check for valid userid/password
         if (password!.text == "demo") {
             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "loggedIn")
+            delegate?.loginSuccess(self)
         } else {
             // Display alert
             if (count(user!.text) == 0) && (count(password!.text) == 0) {
