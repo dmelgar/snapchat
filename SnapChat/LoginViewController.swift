@@ -19,10 +19,8 @@ class LoginViewController: UIViewController {
         
     }
     
-    override func viewDidAppear(animated: Bool) {
-        // Would implement differently second time. Modal view for login or not with storyboard
+    override func viewWillAppear(animated: Bool) {
         if NSUserDefaults.standardUserDefaults().boolForKey("loggedIn") {
-            performSegueWithIdentifier("loggedIn", sender: self)
             delegate?.loginSuccess(self)
         }
     }
