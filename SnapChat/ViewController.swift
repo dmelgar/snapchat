@@ -52,14 +52,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
         appDelegate.imageCount++
+        // appDelegate.galleryViewController = GalleryTableViewController()
         appDelegate.galleryViewController = GalleryViewController()
+        
+        // appDelegate.galleryViewController!.displayPlaceHolder = true
+        appDelegate.galleryViewController!.displayPlaceHolder()
         
         // Background thread to resize, save image and update gallery view
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
             appDelegate.processImage(image)
         })
-        
-        appDelegate.galleryViewController!.displayPlaceHolder()
+
         self.navigationController!.pushViewController(appDelegate.galleryViewController!, animated: true)
         
         picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)

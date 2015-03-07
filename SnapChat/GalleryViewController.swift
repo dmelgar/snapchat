@@ -16,6 +16,20 @@ to edge cases
 */
 
 class GalleryViewController: UIViewController, UIScrollViewDelegate {
+    enum ActiveImageViewEnum {
+        case T, M, B
+        func description () -> String {
+            switch self {
+            case T:
+                return "Top"
+            case M:
+                return "Middle"
+            case B:
+                return "Bottom"
+            }
+        }
+    }
+    var activeImageView: ActiveImageViewEnum = .T
 
     var currentImageIndex: Int = 0
     var scrollView: UIScrollView = UIScrollView()
@@ -42,6 +56,31 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         // println("init coder called")
     }
     
+    func activeImageViewForOffset(offset: CGFloat) -> ActiveImageViewEnum {
+        let result: ActiveImageViewEnum
+        if offset >= scrollView.bounds.height * 2 {
+            result = .B
+        } else if offset < scrollView.bounds.height {
+            result = .T
+        } else {
+            result = .M
+        }
+        return result
+    }
+    
+    func offsetForActiveImageView(position: ActiveImageViewEnum) -> CGFloat {
+        var offset: CGFloat = 0
+        switch position {
+            case .T:
+                offset = 0
+            case .M:
+                offset = scrollView.bounds.height
+            case .B:
+                offset = 2 * scrollView.bounds.height
+        }
+        return offset
+    }
+    
     // Resets gallery to top, display placeholder and fill in images below it
     func displayPlaceHolder() {
         let placeholder = UIImage(named: "placeholder.jpg")
@@ -64,6 +103,7 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         println(path)
         // Assume the current view is the size of the screen
     
+        automaticallyAdjustsScrollViewInsets = false
         adjustContentSize()
         scrollView.pagingEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
@@ -101,8 +141,13 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         scrollView.contentOffset = CGPointMake(0, 0)
     }
     
-    func adjustContentSize() {
-        let numberOfImages = (UIApplication.sharedApplication().delegate as! AppDelegate).imageCount
+    func adjustContentSize(numberOfViews: Int? = nil) {
+        let numberOfImages: Int
+        if numberOfViews == nil {
+            numberOfImages = (UIApplication.sharedApplication().delegate as! AppDelegate).imageCount
+        } else {
+            numberOfImages = numberOfViews!
+        }
         let numberOfImageViews = min(3, numberOfImages)
         let viewSize = view.frame.size
         let scContentSize = CGSizeMake(viewSize.width, viewSize.height * CGFloat(numberOfImageViews))
@@ -136,6 +181,8 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         let numberOfImages = (UIApplication.sharedApplication().delegate as! AppDelegate).imageCount
+        println("ScrollviewdidendDecelerating stoped at offset.y= \(scrollView.contentOffset.y)")
+        // println("Scrollview bounds: \(scrollView.bounds) TopImageViewFrame: \(topView!.frame)")
         // View has stopped scrolling. Readjust
         
         /*
@@ -152,25 +199,35 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
         
         */
         var rejectPage = false
+        var newY: CGFloat = 0
         // if offset is below the start of middle view, then it was a scroll down
-        if scrollView.contentOffset.y > previousOffset.y {
+        if scrollView.contentOffset.y > previousOffset.y && activeImageView != .B {
             // Scroll down
+            println("Scrolled down")
             if currentImageIndex == 0 {
+                activeImageView = .M
+                println("Top image")
                 // Slide content view down 1
                 // Other images should already be loaded
-                if numberOfImages > currentImageIndex + 1 {
+                if numberOfImages > 1 {
                     // Move to next image IF there is another image
                     currentImageIndex++
+                    
+                    // Adjust content size to 1, 2, 3 imageviews based on # of images available
+                    adjustContentSize()
                 }
             } else
             if currentImageIndex == numberOfImages - 2 {
+                activeImageView = .B
+                println("Second to last image")
                 // We're scrolling down to the last image
                 // Slide the content offset down to the last image
                 // Don't load a new image
                 currentImageIndex++
-                scrollView.contentOffset = CGPointMake(0, scrollView.bounds.height * 2)
             } else
             if currentImageIndex > 0 {
+                activeImageView = .M
+                println("Standard next image")
                 // main case
                 // rearrange views
                 // Rearrange imageViews frames
@@ -188,29 +245,44 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
                 // Load new image into bottom view
                 currentImageIndex++
                 bottomView!.image = imageForIndex(currentImageIndex + 1)
-                
-                // reset offset to middle view
-                scrollView.contentOffset = CGPointMake(0, scrollView.bounds.height)
-                scrollView.setNeedsDisplay()
             }
-        } else if scrollView.contentOffset.y < previousOffset.y {
+        } else if scrollView.contentOffset.y < previousOffset.y && activeImageView != .T {
             // Scrolled up
+            println("Scrolled up")
+            var doubleJump = false
+            // Very rare case. If at the bottom view and managed to scroll up twice,
+            // move to middle view AND act like you scrolled up once so you end up at the same image
+            if activeImageView == .B && scrollView.contentOffset.y < scrollView.bounds.height {
+                activeImageView = .M
+                doubleJump = true
+                currentImageIndex--
+                // Then let it fall through and perform the action for scrolling up once.
+            }
             
             // Special cases
             if currentImageIndex == 1 {
+                activeImageView = .T
                 // Let the content view go up. Don't change anything.
                 // Don't load a new image, 0 should already be there
                 currentImageIndex--
+                
+                // When at top view, only allow 2 view to prevent scrolling down twice
+                adjustContentSize(numberOfViews: 2)
             } else
             if currentImageIndex == 0 {
                 // Let the content view stay where it is. Should bounce on edge
+                activeImageView = .T
             } else
-            if currentImageIndex == numberOfImages - 1 {
+            if currentImageIndex == numberOfImages - 1 && !doubleJump {
                  // Slide contentOffset to middle view from bottom. No need to do anything else
-                scrollView.contentOffset = CGPointMake(0, scrollView.bounds.height)
+                activeImageView = .M
                 currentImageIndex--
+                
+                // Set the content view height back to 3
+                adjustContentSize(numberOfViews: 3)
             } else
             if currentImageIndex > 1 {
+                activeImageView = .M
                 // Move views
                 var tmpFrame = topView!.frame
                 topView!.frame = middleView!.frame
@@ -225,13 +297,28 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
                 
                 currentImageIndex--
                 topView!.image = imageForIndex(currentImageIndex - 1)
-                
-                // reset offset to middle view
-                scrollView.contentOffset = CGPointMake(0, scrollView.bounds.height)
-                scrollView.setNeedsDisplay()
             }
         }
+        
+        newY = offsetForActiveImageView(activeImageView)
+//        if activeImageView == .T {
+//            newY = 0
+//        } else if activeImageView == .M {
+//            newY = scrollView.bounds.height
+//        } else if activeImageView == .B {
+//            newY = scrollView.bounds.height * 2
+//        }
+        
+        println("ScrollView end newY= \(newY) oldY= \(previousOffset.y)" +
+            " ActiveImageView = \(activeImageView.description()) imageIndex:\(currentImageIndex) \n")
+
+        scrollView.contentOffset = CGPointMake(0, newY)
         previousOffset = scrollView.contentOffset
+        
+        if scrollView.contentOffset.y < 0 {
+            scrollView.scrollRectToVisible(topView!.bounds, animated: true)
+            // scrollView.contentOffset.y = 0
+        }
         // println("CurrentImageIndex = \(currentImageIndex)")
     }
 

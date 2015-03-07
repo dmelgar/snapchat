@@ -18,6 +18,8 @@
 		33600C7F1AA610BD0010AF8A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 33600C7D1AA610BD0010AF8A /* LaunchScreen.xib */; };
 		33600C8B1AA610BD0010AF8A /* SnapChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33600C8A1AA610BD0010AF8A /* SnapChatTests.swift */; };
 		33600C951AA6241F0010AF8A /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33600C941AA6241F0010AF8A /* GalleryViewController.swift */; };
+		33839B391AAA211400D4B882 /* GalleryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33839B381AAA211400D4B882 /* GalleryTableViewController.swift */; };
+		33839B3B1AAA21DD00D4B882 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33839B3A1AAA21DD00D4B882 /* ImageTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +48,8 @@
 		33600C891AA610BD0010AF8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		33600C8A1AA610BD0010AF8A /* SnapChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapChatTests.swift; sourceTree = "<group>"; };
 		33600C941AA6241F0010AF8A /* GalleryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
+		33839B381AAA211400D4B882 /* GalleryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryTableViewController.swift; sourceTree = "<group>"; };
+		33839B3A1AAA21DD00D4B882 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +102,8 @@
 				33600C721AA610BD0010AF8A /* Supporting Files */,
 				33600C941AA6241F0010AF8A /* GalleryViewController.swift */,
 				330DD8571AA7D3BA00DCFB7D /* LoginViewController.swift */,
+				33839B381AAA211400D4B882 /* GalleryTableViewController.swift */,
+				33839B3A1AAA21DD00D4B882 /* ImageTableViewCell.swift */,
 			);
 			path = SnapChat;
 			sourceTree = "<group>";
@@ -232,6 +238,8 @@
 			files = (
 				330DD8581AA7D3BA00DCFB7D /* LoginViewController.swift in Sources */,
 				33600C951AA6241F0010AF8A /* GalleryViewController.swift in Sources */,
+				33839B391AAA211400D4B882 /* GalleryTableViewController.swift in Sources */,
+				33839B3B1AAA21DD00D4B882 /* ImageTableViewCell.swift in Sources */,
 				33600C771AA610BD0010AF8A /* ViewController.swift in Sources */,
 				33600C751AA610BD0010AF8A /* AppDelegate.swift in Sources */,
 			);

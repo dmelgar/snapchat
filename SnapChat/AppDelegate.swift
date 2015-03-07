@@ -14,12 +14,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     // Maintains reference to singleton GalleryViewController
+    // var galleryViewController: GalleryTableViewController?
     var galleryViewController: GalleryViewController?
     
     // Images are kept stores in Document directory with name = indexNumber.png. 
     // ImageCount is the number of images the app knows about. In this demo the count is not
     // saved although images are. Could use UserDefaults or other file to save previous count
-    var imageCount = 0
+    var imageCount = 6
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
