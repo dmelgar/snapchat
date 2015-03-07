@@ -10,9 +10,10 @@ import UIKit
 
 class GalleryTableViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var displayPlaceHolder = false
+    var _displayPlaceHolder = false
     
     override func viewDidLoad() {
+        println("GalleryTableViewController viewDidLoad")
         super.viewDidLoad()
         self.tableView.registerClass(ImageTableViewCell.self, forCellReuseIdentifier: "imageCell")
 
@@ -46,19 +47,22 @@ class GalleryTableViewController: UITableViewController, UITableViewDelegate, UI
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier("imageCell", forIndexPath: indexPath) as! ImageTableViewCell
+        // var cell = ImageTableViewCell()
+        
+        // NSThread.sleepForTimeInterval(1)
 
         // Configure the cell...
-        if displayPlaceHolder {
+        if _displayPlaceHolder {
             if indexPath.row == 0 {
                 cell.iv.image = UIImage(named: "placeholder.jpg")
             } else {
+                println("Loading image \(indexPath.row)")
                 cell.iv.image = imageForIndex(indexPath.row - 1)
             }
         } else {
            cell.iv.image = imageForIndex(indexPath.row)
         }
-        cell.frame = self.view.bounds
-        cell.iv.frame = self.view.bounds
+
         println("Getting image for \(indexPath.row)")
         return cell
     }
@@ -82,14 +86,18 @@ class GalleryTableViewController: UITableViewController, UITableViewDelegate, UI
         return image
     }
     
-    func replacePlaceholder(image: UIImage) {
+    func displayPlaceHolder() {
+        _displayPlaceHolder = true
+    }
+    
+    func replacePlaceHolder(image: UIImage) {
         // Refresh the table view
-        displayPlaceHolder = false
+        _displayPlaceHolder = false
         tableView.reloadData()
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 640
+        return tableView.bounds.height
     }
 
     /*

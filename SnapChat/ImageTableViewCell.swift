@@ -9,25 +9,39 @@
 import UIKit
 
 class ImageTableViewCell: UITableViewCell {
-    var iv: UIImageView
+    var iv = UIImageView()
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String!) {
-        self.iv = UIImageView()
         self.iv.contentMode = .ScaleAspectFit
+        self.iv.setTranslatesAutoresizingMaskIntoConstraints(false)
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         // self.iv = UIImageView()
+        self.contentView.addSubview(iv)
+        
+        var viewsDict = Dictionary <String, UIView>()
+        viewsDict["image"] = self.iv
+
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[image]-|", options: nil, metrics: nil, views: viewsDict));
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-[image]-|", options: nil, metrics: nil, views: viewsDict));
+
+        // self.iv.frame = self.bounds
+    }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        iv.contentMode = .ScaleAspectFit
         self.addSubview(iv)
         self.iv.frame = self.bounds
     }
-
     
     override init() {
-        iv = UIImageView()
         super.init()
+        iv.contentMode = .ScaleAspectFit
+        addSubview(iv)
+        iv.frame = bounds
     }
     required init(coder aDecoder: NSCoder) {
         // Add image view
-        iv = UIImageView()
         super.init(coder: aDecoder)
     }
 

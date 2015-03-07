@@ -92,7 +92,7 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate {
     
     // A little risky timing wise. Assumption is that the resize will be very quick, user not able to scroll down
     // to replace top view in time to cause an issue
-    func replacePlaceholder(image: UIImage) {
+    func replacePlaceHolder(image: UIImage) {
         topView!.image = image
         middleView!.image = imageForIndex(1)
     }
