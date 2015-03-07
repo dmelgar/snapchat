@@ -388,7 +388,7 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate, UIImagePick
         
         appDelegate.imageCount++
         displayPlaceHolder()
-        appDelegate.galleryViewController = self
+        // appDelegate.galleryViewController = self
         
         // Background thread to resize, save image and update gallery view
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {

@@ -36,6 +36,7 @@ class GalleryTableViewController: UIViewController, UITableViewDelegate, UITable
         tableView.delegate = self
         tableView.dataSource = self
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        tableView.pagingEnabled = true
         
         var viewsDict = Dictionary <String, UIView>()
         viewsDict["camera"] = camera
@@ -118,6 +119,8 @@ class GalleryTableViewController: UIViewController, UITableViewDelegate, UITable
         // Refresh the table view
         _displayPlaceHolder = false
         tableView.reloadData()
+        tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: true)
+        
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -154,7 +157,7 @@ class GalleryTableViewController: UIViewController, UITableViewDelegate, UITable
         
         appDelegate.imageCount++
         displayPlaceHolder()
-        // appDelegate.galleryViewController = self
+        appDelegate.galleryViewController = self
         
         // Background thread to resize, save image and update gallery view
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {

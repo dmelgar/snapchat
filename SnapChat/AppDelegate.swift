@@ -14,8 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     // Maintains reference to singleton GalleryViewController
-    // var galleryViewController: GalleryTableViewController?
-    var galleryViewController: GalleryViewController?
+    var galleryViewController: GalleryTableViewController?
+    // var galleryViewController: GalleryViewController?
     
     // Images are kept stores in Document directory with name = indexNumber.png. 
     // ImageCount is the number of images the app knows about. In this demo the count is not
@@ -30,8 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: frame)
         window!.backgroundColor = UIColor.whiteColor()
         
-        let itemsViewControler: UIViewController = GalleryViewController()
-        // let itemsViewControler: UIViewController = GalleryTableViewController()
+        // let itemsViewControler: UIViewController = GalleryViewController()
+        let itemsViewControler: UIViewController = GalleryTableViewController()
         if let window = self.window{
             window.rootViewController = itemsViewControler
             window.makeKeyAndVisible()
