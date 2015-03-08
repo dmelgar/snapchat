@@ -12,7 +12,7 @@ class LoginViewController: UIViewController {
     
     @IBOutlet var user: UITextField?
     @IBOutlet var password: UITextField?
-    @IBOutlet var delegate: GalleryViewController?
+    @IBOutlet var delegate: GalleryTableViewController?
     
     override func viewDidLoad() {
         // Construct the view

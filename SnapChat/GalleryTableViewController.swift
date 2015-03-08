@@ -10,9 +10,18 @@ import UIKit
 import MobileCoreServices
 
 class GalleryTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    var loginViewController: LoginViewController?
+    var loggedIn = false
 
     var _displayPlaceHolder = false
     var tableView = UITableView()
+    
+    override func viewDidAppear(animated: Bool) {
+        if !loggedIn {
+            login()
+        }
+    }
     
     override func viewDidLoad() {
         println("GalleryTableViewController viewDidLoad")
@@ -37,6 +46,7 @@ class GalleryTableViewController: UIViewController, UITableViewDelegate, UITable
         tableView.dataSource = self
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         tableView.pagingEnabled = true
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
         var viewsDict = Dictionary <String, UIView>()
         viewsDict["camera"] = camera
@@ -167,6 +177,22 @@ class GalleryTableViewController: UIViewController, UITableViewDelegate, UITable
         picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    func login() {
+        if NSUserDefaults.standardUserDefaults().boolForKey("loggedIn") {
+            loggedIn = true
+        } else {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            loginViewController = storyboard.instantiateInitialViewController() as? LoginViewController
+            loginViewController!.delegate = self
+            modalPresentationStyle = .CurrentContext
+            presentViewController(loginViewController!, animated: true, completion: nil)
+        }
+    }
+    
+    func loginSuccess(sender: LoginViewController) {
+        loggedIn = true
+        sender.dismissViewControllerAnimated(true, completion: nil)
+    }
 
 
     /*

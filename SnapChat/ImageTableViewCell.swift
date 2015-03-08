@@ -21,8 +21,8 @@ class ImageTableViewCell: UITableViewCell {
         var viewsDict = Dictionary <String, UIView>()
         viewsDict["image"] = self.iv
 
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[image]-|", options: nil, metrics: nil, views: viewsDict));
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-[image]-|", options: nil, metrics: nil, views: viewsDict));
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[image]|", options: nil, metrics: nil, views: viewsDict));
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[image]|", options: nil, metrics: nil, views: viewsDict));
 
         // self.iv.frame = self.bounds
     }

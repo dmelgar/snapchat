@@ -404,8 +404,8 @@ class GalleryViewController: UIViewController, UIScrollViewDelegate, UIImagePick
             loggedIn = true
         } else {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            loginViewController = storyboard.instantiateInitialViewController() as! LoginViewController
-            loginViewController!.delegate = self
+            loginViewController = storyboard.instantiateInitialViewController() as? LoginViewController
+            // loginViewController!.delegate = self
             modalPresentationStyle = .CurrentContext
             presentViewController(loginViewController!, animated: true, completion: nil)
         }
